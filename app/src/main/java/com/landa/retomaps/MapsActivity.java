@@ -3,6 +3,7 @@ package com.landa.retomaps;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -10,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -21,6 +23,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, CustumDialog.DialogListener {
 
@@ -61,22 +65,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        miUbicación();
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//        miUbicación();
 
-            @Override
-            public void onMapClick(LatLng point) {
+        agregarMarcadorEspecifico(3.341736,-76.529923);
+
+       AgregarPoligono(new LatLng(3.341238,-76.530406),new LatLng(3.341254,-76.529859),new LatLng(3.341039,-76.529864),new LatLng(3.341050,-76.530416));
+        AgregarPoligono(new LatLng(3.341029,-76.530470),new LatLng(3.340997,-76.529939),new LatLng(3.340772,-76.529939),new LatLng(3.340820,-76.530459));
 
 
-                openDialog();
 
-                MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(point.latitude, point.longitude)).title(Marcador);
-
-                mMap.addMarker(marker);
-                Log.d("INFORMATION>>>>>", "la latitud es " + point.latitude + " la longitud es " + point.longitude);
-            }
-        });
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//
+//            @Override
+//            public void onMapClick(LatLng point) {
+//
+//
+//                openDialog();
+//
+//                MarkerOptions marker = new MarkerOptions().position(
+//                        new LatLng(point.latitude, point.longitude)).title(Marcador);
+//
+//                mMap.addMarker(marker);
+//                Log.d("INFORMATION>>>>>", "la latitud es " + point.latitude + " la longitud es " + point.longitude);
+//            }
+//        });
 
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
@@ -101,6 +113,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
+    }
+
+
+    public void AgregarPoligono(LatLng cordenadas1,LatLng cordenadas2,LatLng cordenadas3,LatLng cordenadas4){
+
+        PolygonOptions opcionesPoligono= new PolygonOptions()
+                .add(cordenadas1)
+                .add(cordenadas2)
+                .add(cordenadas3)
+                .add(cordenadas4)
+                ;
+        Polygon poligono=mMap.addPolygon(opcionesPoligono);
+        poligono.setFillColor(Color.WHITE);
+        poligono.setStrokeColor(Color.RED);
+
+
+
+    }
+
+//    LatLng coordenadas = new LatLng(3.341120, -76530042) ubicación del c;
+
+    ///metodo para el práctico/////
+    public void agregarMarcadorEspecifico(double latitud, double longitud){
+        LatLng coordenadas = new LatLng(latitud, longitud);
+        CameraUpdate miUbicación = CameraUpdateFactory.newLatLngZoom(coordenadas, 16);
+        if (marcador != null) marcador.remove();
+        {
+            marcador = mMap.addMarker(new MarkerOptions().position(coordenadas));
+            mMap.animateCamera(miUbicación);
+        }
     }
 
 
